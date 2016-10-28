@@ -12,19 +12,20 @@ import {
   View
 } from 'react-native';
 
+import Canvas from './app/components/canvas'
+
 export default class HiddenDoodleApp extends Component {
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native!
+          HiddenDoodle
         </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+
+        <Canvas />
+
+        <Text>
+          Finish
         </Text>
       </View>
     );
