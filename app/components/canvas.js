@@ -13,6 +13,8 @@ export default class Canvas extends Component {
     Orientation.lockToLandscapeLeft()
   }
 
+
+
   render() {
     return (
       <View>

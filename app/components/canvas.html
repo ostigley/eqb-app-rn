@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html>
-	<body style="background-color:pink;border:solid 1px black;">
-		<canvas id="mycanvas" width="950px" height="500px" style="border:solid 1px black;">
+	<body style="background-color:pinkborder:solid 1px black">
+		<canvas id="mycanvas" width="950px" height="500px" style="border:solid 1px black">
 		</canvas>
 
 		<script type="text/javascript">
 
-		  var canvas = document.querySelector("#mycanvas");
-		  canvas.addEventListener("touchstart", handleStart, false);
-		  // canvas.addEventListener("touchend", handleEnd, false);
-		  // canvas.addEventListener("touchcancel", handleCancel, false);
-		  canvas.addEventListener("touchmove", handleMove, false);
+		  var canvas = document.querySelector("#mycanvas")
+		  canvas.addEventListener("touchstart", handleStart, false)
 
-		  var ctx = canvas.getContext("2d");
+		  canvas.addEventListener("touchmove", handleMove, false)
+
+		  var ctx = canvas.getContext("2d")
 			ctx.strokeStyle= 'black'
 			ctx.lineJoin = 'round'
 			ctx.lineWidth = 5
@@ -21,8 +20,8 @@
 			var touch = {x: 0, y: 0}
 
 			function handleStart(evt) {
-			  evt.preventDefault();
-			  var touched = evt.changedTouches[0];
+			  evt.preventDefault()
+			  var touched = evt.changedTouches[0]
 			  touch.x = touched.pageX - canvas.offsetLeft
 			  touch.y = touched.pageY - canvas.offsetTop
 			  ctx.beginPath()
@@ -31,12 +30,12 @@
 			}
 
 			function handleMove(evt) {
-			  evt.preventDefault();
-			  var touched = evt.changedTouches[0];
+			  evt.preventDefault()
+			  var touched = evt.changedTouches[0]
 	      newX = touched.pageX - canvas.offsetLeft
 			  newY = touched.pageY - canvas.offsetTop
-	      ctx.lineTo(touch.x, touch.y);
-	      ctx.stroke();
+	      ctx.lineTo(touch.x, touch.y)
+	      ctx.stroke()
 	      touch.x = newX
 	      touch.y = newY
 

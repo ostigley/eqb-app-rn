@@ -11,22 +11,28 @@ import {
   Text,
   View
 } from 'react-native';
-
+import Orientation from 'react-native-orientation'
 import Canvas from './app/components/canvas'
 
 export default class HiddenDoodleApp extends Component {
+
+  // componentWillMount () {
+  //   Orientation.lockToPortrait()
+  // }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          HiddenDoodle
-        </Text>
+          <Text style={styles.welcome}>
+            HiddenDoodle
+          </Text>
 
-        <Canvas />
+          <Canvas />
 
-        <Text>
-          Finish
-        </Text>
+
+          <Text>
+            Finish
+          </Text>
       </View>
     );
   }
