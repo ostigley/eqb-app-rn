@@ -3,12 +3,16 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
+import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
 import { View, WebView } from 'react-native';
 
 
 export default class Canvas extends Component {
+  componentDidMount () {
+    Orientation.lockToLandscapeLeft()
+  }
+
   render() {
     return (
       <View>
@@ -16,7 +20,7 @@ export default class Canvas extends Component {
           source={ require('./canvas.html') }
           scalesPageToFit={ true }
           style={ {
-            width: 370,
+            width: 650,
             backgroundColor: 'blue'
           } }
         />
