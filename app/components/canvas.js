@@ -11,12 +11,17 @@ import WebViewBridge from 'react-native-webview-bridge';
 const injected = `
 (function () {
   if (WebViewBridge) {
+    WebViewBridge.send(JSON.stringify({message: 'Initiating', data: {}}));
 
     WebViewBridge.onMessage = function (message) {
-        WebViewBridge.send("got the message inside webview");
+      if (message === "handshake confirmation please") {
+        WebViewBridge.send(JSON.stringify({message: 'Confirming', data: {}}));
+      } else {
+        // other things here regarding canvas
+        document.querySelector('#test').innerHTML = "Time to go HOOOOOOME?"
+      }
     };
 
-    WebViewBridge.send("hello from webview");
   }
 }());
 `
@@ -24,18 +29,21 @@ const injected = `
 export default class Canvas extends Component {
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
+    const { webviewbridge } = this.refs;
+    webviewbridge.sendToBridge("");
   }
 
-  onBridgeMessage(message) {
+  onBridgeMessage(data) {
+    data = JSON.parse(data)
     const { webviewbridge } = this.refs;
-    console.log(message)
-    switch (message) {
-      case "hello from webview":
-        console.log('received initial message')
-        webviewbridge.sendToBridge("hello from react-native");
+    switch (data["message"]) {
+      case "Initiating":
+        console.log('WebViewBridge Link initiated')
+        webviewbridge.sendToBridge("handshake confirmation please");
         break;
-      case "got the message inside webview":
-        console.log("we have got a message from webview! yeah");
+      case "Confirming":
+        console.log("Link confirmed");
+        this.componentDidMount()
         break;
     }
   }
