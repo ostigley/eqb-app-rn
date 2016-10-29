@@ -5,32 +5,22 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, WebView } from 'react-native';
+import { View, WebView, Alert } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected = `
-  (function () {
-          console.log(WebViewBridge, "webview bridge")
-          WebViewBridge.onMessage = function (reactNativeData) {
-            WebViewBridge.send("got the message")
-            // var jsonData = JSON.parse(reactNativeData);
-            // WebViewBridge.send(dataToSend);
-          };
-      }())
+            WebViewBridge.send("Sending from Webview")
 `
 
 export default class Canvas extends Component {
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
-
-    this.refs.webviewbridge.sendToBridge('Hello World')
+    // this.refs.webviewbridge.sendToBridge('Hello World')
   }
 
-  onBridgeMessage(webviewData) {
-    Alert.alert(webviewData);
+  onBridgeMessage(data) {
+    Alert.alert('Alert Box', data, {text: 'Ok', onPress: () => console.log('OK Pressed!')});
   }
-
-
 
   render() {
     return (
@@ -38,11 +28,12 @@ export default class Canvas extends Component {
         <WebViewBridge
           source={ require('./canvas.html') }
           ref="webviewbridge"
-          onBridgeMessage ={this.onBridgeMessages}
-          scalesPageToFit={ true }
-          injectedJavascript={injected}
+          onBridgeMessage = { this.onBridgeMessage.bind(this) }
+          scalesPageToFit = { true }
+          injectedJavaScript={ injected }
           style={ {
             width: 650,
+            height: 100,
             backgroundColor: 'blue'
           } }
         />
