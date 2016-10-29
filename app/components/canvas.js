@@ -9,17 +9,35 @@ import { View, WebView, Alert } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected = `
-            WebViewBridge.send("Sending from Webview")
+(function () {
+  if (WebViewBridge) {
+
+    WebViewBridge.onMessage = function (message) {
+        WebViewBridge.send("got the message inside webview");
+    };
+
+    WebViewBridge.send("hello from webview");
+  }
+}());
 `
 
 export default class Canvas extends Component {
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
-    // this.refs.webviewbridge.sendToBridge('Hello World')
   }
 
-  onBridgeMessage(data) {
-    Alert.alert('Alert Box', data, {text: 'Ok', onPress: () => console.log('OK Pressed!')});
+  onBridgeMessage(message) {
+    const { webviewbridge } = this.refs;
+    console.log(message)
+    switch (message) {
+      case "hello from webview":
+        console.log('received initial message')
+        webviewbridge.sendToBridge("hello from react-native");
+        break;
+      case "got the message inside webview":
+        console.log("we have got a message from webview! yeah");
+        break;
+    }
   }
 
   render() {
@@ -30,6 +48,7 @@ export default class Canvas extends Component {
           ref="webviewbridge"
           onBridgeMessage = { this.onBridgeMessage.bind(this) }
           scalesPageToFit = { true }
+          javaScriptEnabled={true}
           injectedJavaScript={ injected }
           style={ {
             width: 650,
