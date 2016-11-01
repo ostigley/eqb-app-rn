@@ -11,21 +11,28 @@ import {
   Text,
   View
 } from 'react-native';
+import Orientation from 'react-native-orientation'
+import Canvas from './app/components/canvas'
 
 export default class HiddenDoodleApp extends Component {
+
+  // componentWillMount () {
+  //   Orientation.lockToPortrait()
+  // }
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+          <Text style={styles.welcome}>
+            HiddenDoodle
+          </Text>
+
+          <Canvas />
+
+
+          <Text>
+            Finish
+          </Text>
       </View>
     );
   }
@@ -39,9 +46,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 30,
     textAlign: 'center',
-    margin: 10,
+    color: 'black',
+    marginTop: 80
   },
   instructions: {
     textAlign: 'center',
