@@ -1,48 +1,6 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
-import Orientation from 'react-native-orientation'
-import Canvas from './app/components/canvas'
-
-export default class HiddenDoodleApp extends Component {
-
-  render() {
-    return (
-      <View style={ styles.container }>
-          <Text style={ styles.welcome }>
-            HiddenDoodle
-          </Text>
-
-          <Canvas />
-
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 30,
-    textAlign: 'center',
-    color: 'black',
-    marginTop: 10
-  }
-});
+import React, { Component } from 'react'
+import { AppRegistry }      from 'react-native'
+import App                  from './app/app'
+const HiddenDoodleApp = () => <App/>
 
 AppRegistry.registerComponent('HiddenDoodleApp', () => HiddenDoodleApp);
