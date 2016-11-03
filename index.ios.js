@@ -16,23 +16,15 @@ import Canvas from './app/components/canvas'
 
 export default class HiddenDoodleApp extends Component {
 
-  // componentWillMount () {
-  //   Orientation.lockToPortrait()
-  // }
-
   render() {
     return (
-      <View style={styles.container}>
-          <Text style={styles.welcome}>
+      <View style={ styles.container }>
+          <Text style={ styles.welcome }>
             HiddenDoodle
           </Text>
 
           <Canvas />
 
-
-          <Text>
-            Finish
-          </Text>
       </View>
     );
   }
@@ -49,13 +41,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     color: 'black',
-    marginTop: 80
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    marginTop: 10
+  }
 });
 
 AppRegistry.registerComponent('HiddenDoodleApp', () => HiddenDoodleApp);
