@@ -1,11 +1,21 @@
-import React, { Component }       from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import { GameContainer }          from './views/game-play'
-import { Provider }               from 'react-redux'
-import { store, gameStateSchema } from  './models/game-state-store'
-import { setState }               from './controllers/game-actions'
+import React, { Component } from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  AppState }                from 'react-native'
+import { GameContainer }    from './views/game-play'
+import { Provider }         from 'react-redux'
+import {
+  store,
+  gameStateSchema
+}                           from  './models/game-state-store'
+import {
+  setState,
+  resetGame
+}                           from './controllers/game-actions'
 
-store.dispatch(setState(gameStateSchema))
+resetGame(store)
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
 window.navigator.userAgent = 'ReactNative'
@@ -25,7 +35,22 @@ export default class App extends Component {
       console.log('connected to socket server')
     })
 
+    this.socket.on('disconnect', () => {
+      resetGame(store)
+    })
+
     this.socket.on('state', state => store.dispatch(setState(state)))
+  }
+
+  componentDidMount () {
+    AppState.addEventListener('change', () => {
+      const state = AppState.currentState
+      if (state === 'inactive' || state === 'background' ) {
+        this.socket.disconnect()
+      } else {
+        this.socket.connect()
+      }
+    })
   }
 
   render () {
