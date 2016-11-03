@@ -1,21 +1,46 @@
 import React, { Component }       from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import Game                       from './views/game-play'
-import Provider                   from 'react-redux'
-import store                      from  './models/game-state-store'
+import { GameContainer }          from './views/game-play'
+import { Provider }               from 'react-redux'
+import { store, gameStateSchema } from  './models/game-state-store'
+import { setState }               from './controllers/game-actions'
 
-const App = () =>
-  <View style={ styles.container }>
+store.dispatch(setState(gameStateSchema))
 
-    <Text style={ styles.heading }>
-      HiddenDoodle
-    </Text>
+// what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
+window.navigator.userAgent = 'ReactNative'
+const io = require('socket.io-client/socket.io')
 
-    <Game />
+export default class App extends Component {
+  constructor () {
+    super()
+    const options = {
+      transports: ['websocket'],
+      forceNew: true
+    }
 
-  </View>
+    this.socket = io('http://localhost:3000', options)
 
-export default App
+    this.socket.on('connect', () => {
+      console.log('connected to socket server')
+    })
+
+    this.socket.on('state', state => store.dispatch(setState(state)))
+  }
+
+  render () {
+    return (
+      <Provider store={ store }>
+        <View style={ styles.container }>
+          <Text style={ styles.heading }>
+            HiddenDoodle
+          </Text>
+          <GameContainer />
+        </View>
+      </Provider>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
