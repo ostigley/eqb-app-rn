@@ -1,6 +1,8 @@
 import React, { Component }       from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import Game                       from './components/game-play'
+import Game                       from './views/game-play'
+import Provider                   from 'react-redux'
+import store                      from  './models/game-state-store'
 
 const App = () =>
   <View style={ styles.container }>
