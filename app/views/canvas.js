@@ -41,8 +41,16 @@ const injected = `
 `
 
 export default class Canvas extends Component {
+  constructor (props) {
+    super(props)
+  }
+
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
+  }
+
+  componentWillUnmount () {
+    Orientation.lockToPortrait()
   }
 
   onBridgeMessage(incoming) {
@@ -58,12 +66,9 @@ export default class Canvas extends Component {
         this.componentDidMount()
         break
       case 'canvas data':
-        console.log(message.data)
+        console.log('canvas data', message.data.length)
+      // send data action called here.
         break
-      default:
-      console.log('Unknown message recieved')
-      console.log(message['action'])
-      console.log(message['data'])
     }
   }
 
@@ -76,6 +81,10 @@ export default class Canvas extends Component {
   render() {
     return (
       <ScrollView>
+        <Text>
+          Draw the {this.props.bodypart} of the beast!
+        </Text>
+
         <WebViewBridge
           source={ require('./canvas.html') }
           ref='webviewbridge'
@@ -85,6 +94,7 @@ export default class Canvas extends Component {
           injectedJavaScript={ injected }
           style={ styles.webview }
         />
+
         <View style={ styles.buttonParent }>
           <Text
             onPress={ () => this.getCanvasData() }
@@ -92,6 +102,7 @@ export default class Canvas extends Component {
               I'm Finished
           </Text>
         </View>
+
       </ScrollView>
     )
   }

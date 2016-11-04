@@ -4,13 +4,12 @@ import {
   Text,
   View
 }                           from 'react-native';
-import Orientation          from 'react-native-orientation'
 import Canvas               from './canvas'
 import Connecting           from  './connecting'
 import Waiting              from './waiting'
 import { connect }  from 'react-redux'
 import * as controllerActions from '../controllers/game-actions'
-
+import { bodyPart }         from '../controllers/helpers'
 
 class Game extends Component {
   constructor (props) {
@@ -24,7 +23,7 @@ class Game extends Component {
       } else if (level === null) {
         return <Waiting styles={ styles.pendingText } />
       } else {
-        return (<Canvas />)
+        return (<Canvas bodyPart={ bodyPart(this.props.level) } />)
       }
   }
 }
