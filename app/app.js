@@ -53,6 +53,19 @@ export default class App extends Component {
     })
   }
 
+  sendDrawing (data) {
+    const state = store.getState()
+    const parts = [null, 'head', 'body', 'feet']
+
+    const action = {
+      type: 'ADD_DRAWING',
+      body: state.num,
+      part: parts[state.level],
+      drawing: data
+    }
+    this.socket.emit('action', action)
+  }
+
   render () {
     return (
       <Provider store={ store }>
@@ -60,7 +73,7 @@ export default class App extends Component {
           <Text style={ styles.heading }>
             HiddenDoodle
           </Text>
-          <GameContainer />
+          <GameContainer sendDrawing= { this.sendDrawing.bind(this) }/>
         </View>
       </Provider>
     )

@@ -17,13 +17,18 @@ class Game extends Component {
   }
 
   render() {
-    const { level } = this.props
+    const { level, sendDrawing, body } = this.props
       if (level === 'waiting') {
         return (<Connecting styles={ styles.pendingText } />)
       } else if (level === null) {
-        return <Waiting styles={ styles.pendingText } />
+        return (<Waiting styles={ styles.pendingText } />)
       } else {
-        return (<Canvas bodyPart={ bodyPart(this.props.level) } />)
+        return (
+          <Canvas
+            bodyPart={ bodyPart(level) }
+            sendDrawing={ sendDrawing }
+            peep={ body.peep }
+          />)
       }
   }
 }

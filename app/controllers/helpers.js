@@ -3,5 +3,5 @@ const table = {
   2: 'body',
   3: 'legs'
 }
-export const bodyPart = state => table[state.level]
 
+export const bodyPart = level => table[level]

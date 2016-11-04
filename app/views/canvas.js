@@ -5,7 +5,7 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected = `
@@ -67,7 +67,7 @@ export default class Canvas extends Component {
         break
       case 'canvas data':
         console.log('canvas data', message.data.length)
-      // send data action called here.
+        this.props.sendDrawing(message.data)
         break
     }
   }
@@ -82,8 +82,10 @@ export default class Canvas extends Component {
     return (
       <ScrollView>
         <Text>
-          Draw the {this.props.bodypart} of the beast!
+          Draw the {this.props.bodyPart} of the beast!
         </Text>
+
+        <Image source={ {uri: this.props.peep }} />
 
         <WebViewBridge
           source={ require('./canvas.html') }
