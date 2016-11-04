@@ -6,7 +6,8 @@ import {
 }                           from 'react-native';
 import Orientation          from 'react-native-orientation'
 import Canvas               from './canvas'
-import Spinner              from  './spinner'
+import Connecting           from  './connecting'
+import Waiting              from './waiting'
 import { connect }  from 'react-redux'
 import * as controllerActions from '../controllers/game-actions'
 
@@ -14,13 +15,14 @@ import * as controllerActions from '../controllers/game-actions'
 class Game extends Component {
   constructor (props) {
     super(props)
-    console.log('props from game container', this.props)
   }
 
   render() {
-      console.log(this.state)
-      if (this.props.level === 'waiting') {
-        return (<Spinner />)
+    const { level } = this.props
+      if (level === 'waiting') {
+        return (<Connecting styles={ styles.pendingText } />)
+      } else if (level === null) {
+        return <Waiting styles={ styles.pendingText } />
       } else {
         return (<Canvas />)
       }
@@ -39,3 +41,8 @@ export const GameContainer = connect(
   controllerActions
 )(Game)
 
+const styles = StyleSheet.create({
+  pendingText: {
+    marginTop: 10,
+  }
+})
