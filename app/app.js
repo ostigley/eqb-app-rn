@@ -1,19 +1,84 @@
-import React, { Component }       from 'react'
-import { StyleSheet, View, Text } from 'react-native'
-import Game                       from './components/game-play'
+import React, { Component } from 'react'
+import {
+  StyleSheet,
+  View,
+  Text,
+  AppState }                from 'react-native'
+import { GameContainer }    from './views/game-play'
+import { Provider }         from 'react-redux'
+import {
+  store,
+  gameStateSchema
+}                           from  './models/game-state-store'
+import {
+  setState,
+  resetGame
+}                           from './controllers/game-actions'
 
-const App = () =>
-  <View style={ styles.container }>
+resetGame(store)
 
-    <Text style={ styles.heading }>
-      HiddenDoodle
-    </Text>
+// what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
+window.navigator.userAgent = 'ReactNative'
+const io = require('socket.io-client/socket.io')
 
-    <Game />
+export default class App extends Component {
+  constructor () {
+    super()
+    const options = {
+      transports: ['websocket'],
+      forceNew: true
+    }
 
-  </View>
+    this.socket = io('http://localhost:3000', options)
 
-export default App
+    this.socket.on('connect', () => {
+      console.log('connected to socket server')
+    })
+
+    this.socket.on('disconnect', () => {
+      resetGame(store)
+    })
+
+    this.socket.on('state', state => store.dispatch(setState(state)))
+  }
+
+  componentDidMount () {
+    AppState.addEventListener('change', () => {
+      const state = AppState.currentState
+      if (state === 'inactive' || state === 'background' ) {
+        this.socket.disconnect()
+      } else {
+        this.socket.connect()
+      }
+    })
+  }
+
+  sendDrawing (data) {
+    const state = store.getState()
+    const parts = [null, 'head', 'body', 'feet']
+
+    const action = {
+      type: 'ADD_DRAWING',
+      body: state.num,
+      part: parts[state.level],
+      drawing: data
+    }
+    this.socket.emit('action', action)
+  }
+
+  render () {
+    return (
+      <Provider store={ store }>
+        <View style={ styles.container }>
+          <Text style={ styles.heading }>
+            HiddenDoodle
+          </Text>
+          <GameContainer sendDrawing= { this.sendDrawing.bind(this) }/>
+        </View>
+      </Provider>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

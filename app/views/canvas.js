@@ -5,7 +5,7 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected = `
@@ -41,8 +41,16 @@ const injected = `
 `
 
 export default class Canvas extends Component {
+  constructor (props) {
+    super(props)
+  }
+
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
+  }
+
+  componentWillUnmount () {
+    Orientation.lockToPortrait()
   }
 
   onBridgeMessage(incoming) {
@@ -58,12 +66,9 @@ export default class Canvas extends Component {
         this.componentDidMount()
         break
       case 'canvas data':
-        console.log(message.data)
+        console.log('canvas data', message.data.length)
+        this.props.sendDrawing(message.data)
         break
-      default:
-      console.log('Unknown message recieved')
-      console.log(message['action'])
-      console.log(message['data'])
     }
   }
 
@@ -76,6 +81,12 @@ export default class Canvas extends Component {
   render() {
     return (
       <ScrollView>
+        <Text>
+          Draw the {this.props.bodyPart} of the beast!
+        </Text>
+
+        <Image source={ {uri: this.props.peep }} />
+
         <WebViewBridge
           source={ require('./canvas.html') }
           ref='webviewbridge'
@@ -85,6 +96,7 @@ export default class Canvas extends Component {
           injectedJavaScript={ injected }
           style={ styles.webview }
         />
+
         <View style={ styles.buttonParent }>
           <Text
             onPress={ () => this.getCanvasData() }
@@ -92,6 +104,7 @@ export default class Canvas extends Component {
               I'm Finished
           </Text>
         </View>
+
       </ScrollView>
     )
   }
