@@ -55,12 +55,11 @@ export default class App extends Component {
 
   sendDrawing (data) {
     const state = store.getState()
-    const parts = [null, 'head', 'body', 'feet']
 
     const action = {
       type: 'ADD_DRAWING',
       body: state.num,
-      part: parts[state.level],
+      part: state.part,
       drawing: data
     }
     this.socket.emit('action', action)

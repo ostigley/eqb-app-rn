@@ -9,7 +9,6 @@ import Connecting           from  './connecting'
 import Waiting              from './waiting'
 import { connect }  from 'react-redux'
 import * as controllerActions from '../controllers/game-actions'
-import { bodyPart }         from '../controllers/helpers'
 
 class Game extends Component {
   constructor (props) {
@@ -17,17 +16,17 @@ class Game extends Component {
   }
 
   render() {
-    const { level, sendDrawing, body } = this.props
+    const { level, sendDrawing, body, part } = this.props
       if (level === 'waiting') {
         return (<Connecting styles={ styles.pendingText } />)
-      } else if (level === null) {
+      } else if (!level) {
         return (<Waiting styles={ styles.pendingText } />)
       } else {
         return (
           <Canvas
-            bodyPart={ bodyPart(level) }
+            bodyPart={ part }
             sendDrawing={ sendDrawing }
-            peep={ body.peep }
+            clue={ body.clue }
           />)
       }
   }
@@ -37,6 +36,7 @@ const mapStateToProps = state => {
   return {
     level: state.level,
     body: state.body,
+    part: state.part
   }
 }
 
