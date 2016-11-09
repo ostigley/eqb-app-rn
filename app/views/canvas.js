@@ -84,8 +84,10 @@ export default class Canvas extends Component {
         <Text>
           Draw the {this.props.bodyPart} of the beast!
         </Text>
-
-        <Image source={ {uri: this.props.clue }} />
+        <Image
+          source={ {uri: this.props.clue }}
+          style={styles.clue}
+          resizeMode={'stretch'}/>
 
         <WebViewBridge
           source={ require('./canvas.html') }
@@ -128,5 +130,10 @@ const styles = {
     width: 150,
     textAlign: 'center',
     paddingTop: 15
+  },
+  clue: {
+    width: 650,
+    height: 50,
+    overflow: 'visible'
   }
 }
