@@ -5,7 +5,7 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image } from 'react-native';
+import { View, Text, ScrollView, Image, Dimensions } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected = `
@@ -114,7 +114,7 @@ export default class Canvas extends Component {
 
 const styles = {
   webview: {
-    width: 650,
+    width: Dimensions.get('window').width*0.99,
     height: 220,
     backgroundColor: 'blue'
   },
@@ -132,7 +132,7 @@ const styles = {
     paddingTop: 15
   },
   clue: {
-    width: 650,
+    width: Dimensions.get('window').width*0.99,
     height: 50,
     overflow: 'visible'
   }
