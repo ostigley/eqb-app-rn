@@ -84,10 +84,6 @@ export default class Canvas extends Component {
         <Text>
           Draw the {this.props.bodyPart} of the beast!
         </Text>
-        <Image
-          source={ {uri: this.props.clue }}
-          style={styles.clue}
-          resizeMode={'stretch'}/>
 
         <WebViewBridge
           source={ require('./canvas.html') }

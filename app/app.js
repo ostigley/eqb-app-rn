@@ -30,7 +30,7 @@ const hack = {
   num: 3,
   part: "Trump"
 }
-store.dispatch(setState(hack))
+// store.dispatch(setState(hack))
 
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
@@ -51,9 +51,10 @@ export default class App extends Component {
       console.log('connected to socket server')
       const action = {
       type: 'SET_DIMENSIONS',
-      dimensions: this.dimensions
+      dimensions: this.dimensions,
+      playerId: this.socket.id
     }
-
+    this.socket.emit('action', action)
     })
 
     this.socket.on('disconnect', () => {
