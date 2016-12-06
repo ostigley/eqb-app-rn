@@ -7,6 +7,7 @@ import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Image, Dimensions } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
+import Clue          from './clue.js'
 
 const injected = `
 (function () {
@@ -73,7 +74,6 @@ export default class Canvas extends Component {
   }
 
   getCanvasData () {
-    console.log('finished')
     const { webviewbridge } = this.refs;
     webviewbridge.sendToBridge('extract data')
   }
@@ -84,6 +84,8 @@ export default class Canvas extends Component {
         <Text>
           Draw the {this.props.bodyPart} of the beast!
         </Text>
+
+        <Clue styles={ styles.clue } clue={ this.props.clue } />
 
         <WebViewBridge
           source={ require('./canvas.html') }
