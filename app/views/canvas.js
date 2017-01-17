@@ -79,13 +79,16 @@ export default class Canvas extends Component {
   }
 
   render() {
+    const { bodyPart, clue } = this.props
     return (
       <ScrollView>
         <Text>
-          Draw the {this.props.bodyPart} of the beast!
+          Draw the { bodyPart } of the beast!
         </Text>
 
-        <Clue styles={ styles.clue } clue={ this.props.clue } />
+        <Clue
+          styles={ styles.clue }
+          clue={ clue } />
 
         <WebViewBridge
           source={ require('./canvas.html') }
@@ -130,8 +133,8 @@ const styles = {
     paddingTop: 15
   },
   clue: {
-    width: Dimensions.get('window').width*0.99,
-    height: 50,
+    width: 300,
+    height: 95,
     overflow: 'visible'
   }
 }

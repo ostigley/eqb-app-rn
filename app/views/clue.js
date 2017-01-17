@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
+import { Image, Text } from 'react-native';
 
 const Clue = ({styles, clue}) => {
 	if (clue === '') {
-		return null
+		return <Text>No clue</Text>
 	} else {
-		<Image
+		return <Image
 			style={ styles }
 			source={ {uri: clue } }
 			resizeMode={'stretch'} />
