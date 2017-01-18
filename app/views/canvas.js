@@ -133,8 +133,8 @@ const styles = {
     paddingTop: 15
   },
   clue: {
-    width: 300,
-    height: 95,
+    width: Dimensions.get('window').width*0.99,
+    height: 30,
     overflow: 'visible'
   }
 }
