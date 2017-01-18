@@ -16,10 +16,11 @@ import * as controllerActions from '../controllers/game-actions'
 class Game extends Component {
   constructor (props) {
     super(props)
+    console.log('game play', this.props)
   }
 
   componentDidMount () {
-    if (this.props.level.current == 4 ) {
+    if (this.props.level && this.props.level.current == 4 ) {
       Orientation.lockToPortrait()
     }
   }

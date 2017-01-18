@@ -4,13 +4,10 @@ import {
   View,
   Text,
   AppState,
-  Dimensions }                from 'react-native'
+  Dimensions }              from 'react-native'
 import { GameContainer }    from './views/game-play'
 import { Provider }         from 'react-redux'
-import {
-  store,
-  gameStateSchema
-}                           from  './models/game-state-store'
+import { store }            from  './models/game-state-store'
 import {
   setState,
   resetGame
