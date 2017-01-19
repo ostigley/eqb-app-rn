@@ -80,6 +80,7 @@ export default class Canvas extends Component {
 
   render() {
     const { bodyPart, clue } = this.props
+    console.log(Dimensions.get('window').width)
     return (
       <ScrollView>
         <Text>
@@ -117,7 +118,6 @@ const styles = {
   webview: {
     width: Dimensions.get('window').width*0.99,
     height: 220,
-    backgroundColor: 'blue'
   },
   buttonParent: {
     flex: 1,
