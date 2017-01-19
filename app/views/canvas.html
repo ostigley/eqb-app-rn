@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html>
-	<body style="height:300px;width:950px;margin:0;padding:0">
-		<canvas id="mycanvas" width="950px" height="300px" style="border:solid 1px black;">
+<html style="width:100%;">
+	<body style="height:100%;width:100%;margin:0;padding:0">
+		<canvas id="mycanvas" width="1000" height="300" style="border:solid 1px black;">
 		</canvas>
 
 		<script type="text/javascript">
+			document.querySelector('#mycanvas').setAttribute('width', window.innerWidth)
+			document.querySelector('#mycanvas').setAttribute('height', window.innerHeight)
 
 		  var canvas = document.querySelector("#mycanvas")
 		  canvas.addEventListener("touchstart", handleStart, false)
@@ -44,8 +46,3 @@
 		</script>
 	</body>
 </html>
-
-
-<!-- turn off border -->
-<!-- turn off border -->
-<!-- turn off border -->

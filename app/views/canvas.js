@@ -5,7 +5,7 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 import Clue          from './clue.js'
 
@@ -18,7 +18,7 @@ const injected = `
       switch (action) {
         case 'handshake confirmation please':
           WebViewBridge.send(JSON.stringify({
-            action: 'Confirming', data: {}
+            action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }
           }))
           break
         case 'extract data':
@@ -35,7 +35,7 @@ const injected = `
       data: canvas.toDataURL()
     }))
     const ctx = canvas.getContext('2d')
-    ctx.clearRect(0,0,950,300)
+    ctx.clearRect(0,0,window.innerWidth,window.innerHeight)
   }
 
 }());
@@ -52,6 +52,7 @@ export default class Canvas extends Component {
 
   componentWillUnmount () {
     Orientation.lockToPortrait()
+
   }
 
   onBridgeMessage(incoming) {
@@ -63,8 +64,9 @@ export default class Canvas extends Component {
         webviewbridge.sendToBridge('handshake confirmation please')
         break
       case 'Confirming':
-        console.log('Link confirmed')
+        console.log('Link confirmed', message.data)
         this.componentDidMount()
+        this.props.sendDimensions(message.data)
         break
       case 'canvas data':
         console.log('canvas data', message.data.length)
@@ -80,7 +82,6 @@ export default class Canvas extends Component {
 
   render() {
     const { bodyPart, clue } = this.props
-    console.log(Dimensions.get('window').width)
     return (
       <ScrollView>
         <Text>
@@ -116,7 +117,7 @@ export default class Canvas extends Component {
 
 const styles = {
   webview: {
-    width: Dimensions.get('window').width*0.99,
+    width: Dimensions.get('window').width,
     height: 220,
   },
   buttonParent: {
@@ -133,7 +134,7 @@ const styles = {
     paddingTop: 15
   },
   clue: {
-    width: Dimensions.get('window').width*0.99,
+    width: Dimensions.get('window').width,
     height: 30,
     overflow: 'visible'
   }

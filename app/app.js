@@ -86,6 +86,10 @@ export default class App extends Component {
     this.socket.emit('action', action)
   }
 
+  sendDimensions (data) {
+
+  }
+
   render () {
     return (
       <Provider store={ store }>
@@ -93,7 +97,7 @@ export default class App extends Component {
           <Text style={ styles.heading }>
             HiddenDoodle
           </Text>
-          <GameContainer sendDrawing= { this.sendDrawing.bind(this) }/>
+          <GameContainer sendDimensions={ this.sendDimensions.bind(this) }sendDrawing= { this.sendDrawing.bind(this) }/>
         </View>
       </Provider>
     )

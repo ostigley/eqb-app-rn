@@ -26,7 +26,7 @@ class Game extends Component {
   }
 
   render() {
-    const { level, sendDrawing, body, part, dimensions } = this.props
+    const { level, sendDrawing, body, part, sendDimensions } = this.props
       if (level === 'waiting') {
         return (<Connecting styles={ styles.pendingText } />)
       } else if (!level) {
@@ -39,6 +39,7 @@ class Game extends Component {
             bodyPart={ part }
             sendDrawing={ sendDrawing }
             clue={ body.clue }
+            sendDimensions={ sendDimensions }
           />)
       }
   }
