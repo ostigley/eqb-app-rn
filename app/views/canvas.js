@@ -18,8 +18,7 @@ const injected = `
       switch (action) {
         case 'handshake confirmation please':
           WebViewBridge.send(JSON.stringify({
-            action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }
-          }))
+            action: 'Confirming', data: 'hello'))
           break
         case 'extract data':
           deliverCanvas()
@@ -47,7 +46,7 @@ export default class Canvas extends Component {
   }
 
   componentDidMount () {
-    Orientation.lockToLandscapeLeft()
+    // Orientation.lockToLandscapeLeft()
   }
 
   componentWillUnmount () {
@@ -66,7 +65,6 @@ export default class Canvas extends Component {
       case 'Confirming':
         console.log('Link confirmed', message.data)
         this.componentDidMount()
-        this.props.sendDimensions(message.data)
         break
       case 'canvas data':
         console.log('canvas data', message.data.length)

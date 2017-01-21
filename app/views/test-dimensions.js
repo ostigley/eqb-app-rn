@@ -41,10 +41,8 @@ export default class TestDimensions extends Component {
         webviewbridge.sendToBridge('handshake confirmation please')
         break
       case 'Confirming':
-        console.log('TestDimension Link confirmed', message.data)
-        break
-      case 'canvas data':
-        console.log('canvas data', message.data.length)
+        console.log('TestDimension Link confirmed')
+        this.props.sendDimensions(message.data)
         break
     }
   }

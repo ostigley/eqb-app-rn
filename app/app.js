@@ -11,7 +11,8 @@ import { Provider }         from 'react-redux'
 import { store }            from  './models/game-state-store'
 import {
   setState,
-  resetGame
+  resetGame,
+  setDimensions
 }                           from './controllers/game-actions'
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
@@ -30,9 +31,9 @@ export default class App extends Component {
 
     this.socket.on('connect', () => {
       console.log('connected to socket server')
-      const action = {
+       const action = {
       type: 'SET_DIMENSIONS',
-      dimensions: this.dimensions,
+      dimensions: store.getState().dimensions,
       playerId: this.socket.id
     }
     this.socket.emit('action', action)
@@ -43,8 +44,6 @@ export default class App extends Component {
     })
 
     this.socket.on('state', state => store.dispatch(setState(state)))
-
-    this.dimensions = Dimensions.get('window');
   }
 
   componentDidMount () {
@@ -71,22 +70,41 @@ export default class App extends Component {
   }
 
   sendDimensions (data) {
-
+    store.dispatch(setDimensions({}, data))
+    console.log('sendD method', data)
+    const action = {
+      type: 'SET_DIMENSIONS',
+      dimensions: { height: data.width, width: data.height },
+      playerId: this.socket.id
+    }
+    this.socket.emit('action', action)
+    this.forceUpdate()
   }
 
   render () {
+    const dimensionsReady = store.getState().dimensions;
+    let setDimensions = null
+    let game = null
+    if (dimensionsReady) {
+      game = <View style={ styles.container1 }>
+        <Text style={ styles.heading }>
+          HiddenDoodle
+        </Text>
+        <GameContainer
+          sendDrawing= { this.sendDrawing.bind(this) }/>
+      </View>
+    } else {
+      setDimensions = <View style={ styles.container2 }>
+        <TestDimensions
+          sendDimensions={ this.sendDimensions.bind(this) } />
+      </View>
+    }
+
     return (
       <Provider store={ store }>
         <View style={ styles.container }>
-          <View style={ styles.container1 }>
-            <Text style={ styles.heading }>
-              HiddenDoodle
-            </Text>
-            <GameContainer sendDimensions={ this.sendDimensions.bind(this) } sendDrawing= { this.sendDrawing.bind(this) }/>
-          </View>
-          <View style={ styles.container2 }>
-            <TestDimensions />
-          </View>
+          { game }
+          { setDimensions }
         </View>
       </Provider>
     )
