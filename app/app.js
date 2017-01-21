@@ -32,7 +32,7 @@ import {
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
 window.navigator.userAgent = 'ReactNative'
-const io = require('socket.io-client/socket.io')
+const io = require('socket.io-client')
 
 export default class App extends Component {
   constructor () {
@@ -42,7 +42,8 @@ export default class App extends Component {
       forceNew: true
     }
 
-    this.socket = io('http://localhost:3000', options)
+    // this.socket = io('http://localhost:3000', options)
+    this.socket = io('10.0.2.2:3000', options) //android
 
     this.socket.on('connect', () => {
       console.log('connected to socket server')
