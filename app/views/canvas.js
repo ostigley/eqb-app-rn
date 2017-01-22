@@ -5,10 +5,12 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
+import { View, Text, Image, Dimensions, PixelRatio } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 import Clue          from './clue.js'
 import canvasScript        from './canvas-script.js'
+import reactMixin from  'react-mixin'
+import TimerMixin from 'react-timer-mixin';
 
 const injected = `(function () {
   if (WebViewBridge) {
@@ -53,10 +55,12 @@ const injected = `(function () {
 export default class Canvas extends Component {
   constructor (props) {
     super(props)
+    this.instructions = true
   }
 
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
+    this.setTimeout(this.removeInstructions, 5000)
   }
 
   componentWillUnmount () {
@@ -90,62 +94,61 @@ export default class Canvas extends Component {
     webviewbridge.sendToBridge('extract data')
   }
 
+  removeInstructions () {
+      this.instructions = false
+      this.forceUpdate()
+  }
+
   render() {
     const { bodyPart, clue } = this.props
-    return (
-      <ScrollView>
-        <Text>
-          Draw the { bodyPart } of the beast!
-        </Text>
-
-        <Clue
-          styles={ styles.clue }
-          clue={ clue } />
-
-        <WebViewBridge
-          source={ require('./canvas.html') }
-          ref='webviewbridge'
-          onBridgeMessage = { this.onBridgeMessage.bind(this) }
-          scalesPageToFit = { true }
-          javaScriptEnabled={ true }
-          injectedJavaScript={ injected }
-          style={ styles.webview }
-        />
-
-        <View style={ styles.buttonParent }>
-          <Text
-            onPress={ () => this.getCanvasData() }
-            style={ styles.button }>
-              I'm Finished
+    let instructions = null
+    if (this.instructions) {
+      instructions = (<View style={ styles.instructions }>
+          <Text>
+            Draw the { bodyPart } of the beast!
           </Text>
-        </View>
+        </View>)
+    }
 
-      </ScrollView>
-    )
+    return (
+      <View style={ styles.container }>
+        { instructions }
+
+        <View style={ styles.canvas }>
+          <WebViewBridge
+            source={ require('./canvas.html') }
+            ref='webviewbridge'
+            onBridgeMessage = { this.onBridgeMessage.bind(this) }
+            scalesPageToFit = { true }
+            javaScriptEnabled={ true }
+            injectedJavaScript={ injected }
+            style={ styles.webview }
+          />
+        </View>
+      </View>)
   }
 }
+reactMixin(Canvas.prototype, TimerMixin);
 
 const styles = {
-  webview: {
-    width: Dimensions.get('window').width,
-    height: 220,
+  container: {
+    flex: 1
   },
-  buttonParent: {
-    flex: 1,
+  instructions : {
+    zIndex: 1,
+    flex: 3,
     justifyContent: 'center',
-    flexDirection: 'row'
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    position: 'absolute'
   },
-  button: {
-    backgroundColor: 'blue',
-    color: 'white',
-    height: 50,
-    width: 150,
-    textAlign: 'center',
-    paddingTop: 15
-  },
-  clue: {
+  canvas: {
+    zIndex: -1,
     width: Dimensions.get('window').width,
-    height: 30,
-    overflow: 'visible'
+    height: Dimensions.get('window').height,
+  },
+  webview: {
+    flex: 1,
+    zIndex: -1
   }
 }
