@@ -53,15 +53,15 @@ const injected = `(function () {
 
 export default class Canvas extends Component {
   constructor (props) {
+    Orientation.lockToLandscapeLeft()
     super(props)
     this.state = {
       instructions: true,
-      time: 3
+      time: 10
     }
   }
 
   componentDidMount () {
-    Orientation.lockToLandscapeLeft()
     this.startInstructionCountDown()
     this.startTimeRemaining()
   }
@@ -151,6 +151,12 @@ export default class Canvas extends Component {
 }
 reactMixin(Canvas.prototype, TimerMixin);
 
+var {width, height} = Dimensions.get('window')
+width = width > height ? width : Dimensions.get('window').height
+height = height < width ? height : Dimensions.get('window').width
+
+
+
 const styles = {
   container: {
     flex: 1
@@ -175,8 +181,8 @@ const styles = {
   },
   canvas: {
     zIndex: -1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: width,
+    height: height,
   },
   webview: {
     flex: 1,

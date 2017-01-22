@@ -10,7 +10,6 @@ import Connecting           from  './connecting'
 import Waiting              from './waiting'
 import WaitingForNextDrawing from './waiting2'
 import { connect }  from 'react-redux'
-import Orientation from 'react-native-orientation'
 
 import * as controllerActions from '../controllers/game-actions'
 
@@ -19,14 +18,9 @@ class Game extends Component {
     super(props)
   }
 
-  componentDidMount () {
-    if (this.props.level && this.props.level.current == 4 ) {
-      Orientation.lockToPortrait()
-    }
-  }
-
   render() {
     const { level, sendDrawing, body, part, dimensions } = this.props
+
       if (level === 'waiting') {
         return (<Waiting />)
       } else if (level === 'drawing complete') {
