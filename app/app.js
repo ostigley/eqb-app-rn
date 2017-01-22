@@ -87,9 +87,6 @@ export default class App extends Component {
     let game = null
     if (dimensionsReady) {
       game = <View style={ styles.container1 }>
-        <Text style={ styles.heading }>
-          HiddenDoodle
-        </Text>
         <GameContainer
           sendDrawing= { this.sendDrawing.bind(this) }/>
       </View>
@@ -116,7 +113,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container1: {
-    marginTop: Dimensions.get('window').height*0.3,
     zIndex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -126,11 +122,6 @@ const styles = StyleSheet.create({
     zIndex: 0,
     height: Dimensions.get('window').height,
     width: Dimensions.get('window').width
-  },
-  heading: {
-    fontSize: 30,
-    textAlign: 'center',
-    color: 'black'
   }
 });
 

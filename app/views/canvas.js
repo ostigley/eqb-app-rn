@@ -8,23 +8,33 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 import Clue          from './clue.js'
+import canvasScript        from './canvas-script.js'
 
-const injected = `
-(function () {
+const injected = `(function () {
   if (WebViewBridge) {
-    WebViewBridge.send(JSON.stringify({action: 'Initiating', data: {}}))
+
+    WebViewBridge.send(JSON.stringify({action: 'Initiating'}));
 
     WebViewBridge.onMessage = function (action) {
-      switch (action) {
+      switch(JSON.parse(action)['message']) {
         case 'handshake confirmation please':
-          WebViewBridge.send(JSON.stringify({
-            action: 'Confirming', data: 'hello'))
-          break
+          WebViewBridge.send(JSON.stringify( {action: 'Confirming'} ))
+          break;
+        case 'dimensions':
+          var dimensions = JSON.parse(action)['dimensions']
+          var canvas = '${canvasScript}'.replace('replaceWidth', dimensions['width'])
+          canvas = canvas.replace('replaceHeight', dimensions['height'])
+          document.querySelector('body').innerHTML = canvas
+          initDraw()
+          break;
         case 'extract data':
           deliverCanvas()
-          break
+          break;
+        default:
+          break;
       }
-    };
+
+    }
   }
 
   function deliverCanvas () {
@@ -37,8 +47,8 @@ const injected = `
     ctx.clearRect(0,0,window.innerWidth,window.innerHeight)
   }
 
-}());
-`
+}());`
+
 
 export default class Canvas extends Component {
   constructor (props) {
@@ -46,7 +56,7 @@ export default class Canvas extends Component {
   }
 
   componentDidMount () {
-    // Orientation.lockToLandscapeLeft()
+    Orientation.lockToLandscapeLeft()
   }
 
   componentWillUnmount () {
@@ -54,16 +64,18 @@ export default class Canvas extends Component {
 
   }
 
-  onBridgeMessage(incoming) {
-    message = JSON.parse(incoming)
+  onBridgeMessage(message) {
+    message = JSON.parse(message)
     const { webviewbridge } = this.refs;
     switch (message['action']) {
       case 'Initiating':
         console.log('WebViewBridge Link initiated')
-        webviewbridge.sendToBridge('handshake confirmation please')
+        webviewbridge.sendToBridge('{"message": "handshake confirmation please"}')
         break
       case 'Confirming':
-        console.log('Link confirmed', message.data)
+        const {width, height} = this.props.dimensions
+        console.log('Link confirmed')
+        webviewbridge.sendToBridge(`{"message": "dimensions", "dimensions": {"width": ${width} , "height": ${height} }}`)
         this.componentDidMount()
         break
       case 'canvas data':
