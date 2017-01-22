@@ -15,4 +15,11 @@ export const setDimensions = (state, dimensions) => {
   }
 }
 
+export const drawingComplete = state => {
+  return {
+    type: 'DRAWING_COMPLETE',
+    state: state
+  }
+}
+
 export const resetGame = store => store.dispatch(setState(gameStateSchema))

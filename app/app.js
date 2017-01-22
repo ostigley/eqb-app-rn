@@ -12,7 +12,8 @@ import { store }            from  './models/game-state-store'
 import {
   setState,
   resetGame,
-  setDimensions
+  setDimensions,
+  drawingComplete
 }                           from './controllers/game-actions'
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
@@ -59,6 +60,7 @@ export default class App extends Component {
 
   sendDrawing (data) {
     const state = store.getState()
+    store.dispatch(drawingComplete(state))
 
     const action = {
       type: 'ADD_DRAWING',

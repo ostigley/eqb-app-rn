@@ -8,6 +8,7 @@ import Canvas               from './canvas'
 import Final                from './final'
 import Connecting           from  './connecting'
 import Waiting              from './waiting'
+import WaitingForNextDrawing from './waiting2'
 import { connect }  from 'react-redux'
 import Orientation from 'react-native-orientation'
 
@@ -28,6 +29,8 @@ class Game extends Component {
     const { level, sendDrawing, body, part, dimensions } = this.props
       if (level === 'waiting') {
         return (<Waiting />)
+      } else if (level === 'drawing complete') {
+        return (<WaitingForNextDrawing />)
       } else if (!level) {
         return (<Connecting />)
       } else if (level == 4) {

@@ -3,9 +3,13 @@ import { Image, Text } from 'react-native';
 
 const Final = ({finalImage}) => {
 	return <Image
-	style={ {width: 900,height: 600} }
+	style={ styles }
 	source={ {uri: finalImage } }
 	resizeMode={'stretch'} />
 }
 
 export default Final
+
+const styles = {
+  flex: 1
+}

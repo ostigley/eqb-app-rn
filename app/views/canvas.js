@@ -5,9 +5,8 @@
  */
 import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, PixelRatio } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
-import Clue          from './clue.js'
 import canvasScript        from './canvas-script.js'
 import reactMixin from  'react-mixin'
 import TimerMixin from 'react-timer-mixin';
@@ -55,17 +54,40 @@ const injected = `(function () {
 export default class Canvas extends Component {
   constructor (props) {
     super(props)
-    this.instructions = true
+    this.state = {
+      instructions: true,
+      time: 3
+    }
   }
 
   componentDidMount () {
     Orientation.lockToLandscapeLeft()
-    this.setTimeout(this.removeInstructions, 5000)
+    this.startInstructionCountDown()
+    this.startTimeRemaining()
   }
 
-  componentWillUnmount () {
-    Orientation.lockToPortrait()
+  startTimeRemaining () {
+    this.setInterval( () => {
+      this.setState({
+        instructions: this.state.instructions,
+        time: this.state.time - 1
+      })
 
+      if (this.state.time <= 0) {
+        this.getCanvasData()
+      }
+    }, 1000)
+  }
+
+  startInstructionCountDown () {
+    this.setTimeout(() => this.removeInstructions(), 10000)
+  }
+
+  removeInstructions() {
+    this.setState({
+      instructions: false,
+      time: this.state.time
+    })
   }
 
   onBridgeMessage(message) {
@@ -91,18 +113,13 @@ export default class Canvas extends Component {
 
   getCanvasData () {
     const { webviewbridge } = this.refs;
-    webviewbridge.sendToBridge('extract data')
-  }
-
-  removeInstructions () {
-      this.instructions = false
-      this.forceUpdate()
+    webviewbridge.sendToBridge('{"message": "extract data"}')
   }
 
   render() {
     const { bodyPart, clue } = this.props
     let instructions = null
-    if (this.instructions) {
+    if (this.state.instructions) {
       instructions = (<View style={ styles.instructions }>
           <Text>
             Draw the { bodyPart } of the beast!
@@ -113,7 +130,11 @@ export default class Canvas extends Component {
     return (
       <View style={ styles.container }>
         { instructions }
-
+        <View style= { styles.timerContainer }>
+          <Text style={ styles.timer }>
+            {this.state.time}
+          </Text>
+        </View>
         <View style={ styles.canvas }>
           <WebViewBridge
             source={ require('./canvas.html') }
@@ -136,11 +157,21 @@ const styles = {
   },
   instructions : {
     zIndex: 1,
-    flex: 3,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
     position: 'absolute'
+  },
+  timer : {
+    zIndex: 1,
+    flex: 1,
+    fontSize: 30,
+  },
+  timerContainer: {
+    zIndex: 1,
+    position: 'absolute',
+    right: 0
   },
   canvas: {
     zIndex: -1,
