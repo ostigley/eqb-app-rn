@@ -59,28 +59,31 @@ export default class Canvas extends Component {
       instructions: true,
       time: 10
     }
+    this.startTimeRemaining()
   }
 
   componentDidMount () {
     this.startInstructionCountDown()
-    this.startTimeRemaining()
   }
 
   startTimeRemaining () {
-    this.setInterval( () => {
-      this.setState({
-        instructions: this.state.instructions,
-        time: this.state.time - 1
-      })
-
-      if (this.state.time <= 0) {
-        this.getCanvasData()
-      }
-    }, 1000)
+    this.interval = this.setInterval( this.updateTimeRemaining, 1000)
   }
 
-  startInstructionCountDown () {
-    this.setTimeout(() => this.removeInstructions(), 10000)
+  updateTimeRemaining () {
+    const {time, instructions } = this.state
+    this.setState({
+      instructions: instructions,
+      time: time - 1
+    })
+
+    if (this.state.time === 0) {
+      this.getCanvasData()
+    }
+  }
+
+  startInstructionCountDown() {
+    this.setTimeout(() => this.removeInstructions(), 5000)
   }
 
   removeInstructions() {
@@ -105,18 +108,19 @@ export default class Canvas extends Component {
         this.componentDidMount()
         break
       case 'canvas data':
-        console.log('canvas data', message.data.length)
         this.props.sendDrawing(message.data)
         break
     }
   }
 
   getCanvasData () {
+    this.clearInterval(this.interval)
     const { webviewbridge } = this.refs;
     webviewbridge.sendToBridge('{"message": "extract data"}')
   }
 
   render() {
+    const {time} = this.state
     const { bodyPart, clue } = this.props
     let instructions = null
     if (this.state.instructions) {
@@ -132,7 +136,7 @@ export default class Canvas extends Component {
         { instructions }
         <View style= { styles.timerContainer }>
           <Text style={ styles.timer }>
-            {this.state.time}
+            {time}
           </Text>
         </View>
         <View style={ styles.canvas }>
