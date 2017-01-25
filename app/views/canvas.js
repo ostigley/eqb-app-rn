@@ -11,7 +11,7 @@ import canvasScript        from './canvas-script.js'
 import reactMixin from  'react-mixin'
 import TimerMixin from 'react-timer-mixin';
 
-const injected = `(function () {
+const injected =` (function () {
   if (WebViewBridge) {
 
     WebViewBridge.send(JSON.stringify({action: 'Initiating'}));
@@ -26,7 +26,8 @@ const injected = `(function () {
           var canvas = '${canvasScript}'.replace('replaceWidth', dimensions['width'])
           canvas = canvas.replace('replaceHeight', dimensions['height'])
           document.querySelector('body').innerHTML = canvas
-          initDraw()
+          var clueData = "replaceClue"
+          initDraw(clueData)
           break;
         case 'extract data':
           deliverCanvas()
@@ -47,9 +48,7 @@ const injected = `(function () {
     const ctx = canvas.getContext('2d')
     ctx.clearRect(0,0,window.innerWidth,window.innerHeight)
   }
-
 }());`
-
 
 export default class Canvas extends Component {
   constructor (props) {
@@ -57,7 +56,7 @@ export default class Canvas extends Component {
     super(props)
     this.state = {
       instructions: true,
-      time: 10
+      time: 20
     }
     this.startTimeRemaining()
   }
@@ -105,11 +104,10 @@ export default class Canvas extends Component {
         const {width, height} = this.props.dimensions
         console.log('Link confirmed')
         webviewbridge.sendToBridge(`{"message": "dimensions", "dimensions": {"width": ${width} , "height": ${height} }}`)
-        this.componentDidMount()
         break
       case 'canvas data':
         this.props.sendDrawing(message.data)
-        break
+        break;
     }
   }
 
@@ -123,6 +121,7 @@ export default class Canvas extends Component {
     const {time} = this.state
     const { bodyPart, clue } = this.props
     let instructions = null
+
     if (this.state.instructions) {
       instructions = (<View style={ styles.instructions }>
           <Text>
@@ -130,7 +129,7 @@ export default class Canvas extends Component {
           </Text>
         </View>)
     }
-
+    const updatedScript = injected.replace('replaceClue', clue)
     return (
       <View style={ styles.container }>
         { instructions }
@@ -146,7 +145,7 @@ export default class Canvas extends Component {
             onBridgeMessage = { this.onBridgeMessage.bind(this) }
             scalesPageToFit = { true }
             javaScriptEnabled={ true }
-            injectedJavaScript={ injected }
+            injectedJavaScript={ updatedScript }
             style={ styles.webview }
           />
         </View>
@@ -158,7 +157,6 @@ reactMixin(Canvas.prototype, TimerMixin);
 var {width, height} = Dimensions.get('window')
 width = width > height ? width : Dimensions.get('window').height
 height = height < width ? height : Dimensions.get('window').width
-
 
 
 const styles = {

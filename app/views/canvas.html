@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html style="width:100%;">
 <head>
+
   <script type="text/javascript">
-    var initDraw = function () {
+    var initDraw = function (clue) {
       var canvas = document.querySelector("#mycanvas");
       canvas.addEventListener("touchstart", handleStart, false);
 
       canvas.addEventListener("touchmove", handleMove, false);
 
       var ctx = canvas.getContext("2d");
+      if (clue !== '') {
+        var clueImage = new Image
+        clueImage.src = clue
+        clueImage.onload = () => {
+          ctx.drawImage(clueImage, 0,0)
+        }
+      }
       ctx.strokeStyle= "black";
       ctx.lineJoin = "round";
       ctx.lineWidth = 5;

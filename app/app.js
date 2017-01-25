@@ -73,7 +73,6 @@ export default class App extends Component {
 
   sendDimensions (data) {
     store.dispatch(setDimensions({}, data))
-    console.log('sendD method', data)
     const action = {
       type: 'SET_DIMENSIONS',
       dimensions: { height: data.width, width: data.height },

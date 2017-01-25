@@ -7,7 +7,6 @@ import Orientation from 'react-native-orientation'
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
-import Clue          from './clue.js'
 
 const injected =`
 (function () {

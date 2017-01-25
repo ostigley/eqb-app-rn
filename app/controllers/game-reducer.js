@@ -1,6 +1,5 @@
 const gameReducer = (state = {}, action) => {
   let newState = Object.assign({}, state)
- console.log(newState) 
   switch (action.type) {
     case 'SET_STATE':
       return action.state
