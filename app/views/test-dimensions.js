@@ -5,18 +5,18 @@
  */
 var Orientation = require('react-native').NativeModules.Orientation
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
-import WebViewBridge from 'react-native-webview-bridge';
+import { View, Text, ScrollView, Image, Dimensions, PixelRatio, WebView } from 'react-native';
+// import WebViewBridge from 'react-native-webview-bridge';
 
 const injected =`
 (function () {
-  if (WebViewBridge) {
-    WebViewBridge.send(JSON.stringify({action: 'Initiating', data: {}}))
+  if (window.postMessage) {
+    window.postMessage(JSON.stringify({action: 'Initiating', data: {}}))
 
     WebViewBridge.onMessage = function (action) {
       switch (action) {
         case 'handshake confirmation please':
-          WebViewBridge.send(JSON.stringify({
+          window.postMessage(JSON.stringify({
             action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }
           }))
           break
@@ -34,10 +34,11 @@ export default class TestDimensions extends Component {
   onBridgeMessage(incoming) {
     message = JSON.parse(incoming)
     const { webviewbridge } = this.refs;
+    console.log('message from test webview',incoming)
     switch (message['action']) {
       case 'Initiating':
         console.log('TestDimension WebViewBridge Link initiated')
-        webviewbridge.sendToBridge('handshake confirmation please')
+        this.webview.postMessage('handshake confirmation please')
         break
       case 'Confirming':
         console.log('TestDimension Link confirmed')
@@ -47,17 +48,15 @@ export default class TestDimensions extends Component {
   }
 
   render() {
-    var Orientation = require('react-native').NativeModules.Orientation
-    Orientation.lockToLandscapeLeft()
-    debugger
+    
     return (
-        <WebViewBridge
-          source={ require('./canvas.html') }
+        <WebView
+          source={ {html: '<!DOCTYPE html><html style="width:100%;"><head></head><body style="height:100%;width:100%;margin:0;padding:0"><h1>Hello World</h1></body></html>'} }
           ref='webviewbridge'
-          onBridgeMessage = { this.onBridgeMessage.bind(this) }
+          onMessage = { this.onBridgeMessage.bind(this) }
           scalesPageToFit = { true }
           javaScriptEnabled={ true }
-          injectedJavaScript={ injected }
+          injectedJavaScript={ '' }
           style={ styles.webview }
         />
     )
