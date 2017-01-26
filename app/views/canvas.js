@@ -3,29 +3,40 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-import Orientation from 'react-native-orientation'
+var Orientation = require('react-native').NativeModules.Orientation
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
-import Clue          from './clue.js'
+import canvasScript        from './canvas-script.js'
+import reactMixin from  'react-mixin'
+import TimerMixin from 'react-timer-mixin';
 
-const injected = `
-(function () {
+const injected =` (function () {
   if (WebViewBridge) {
-    WebViewBridge.send(JSON.stringify({action: 'Initiating', data: {}}))
+
+    WebViewBridge.send(JSON.stringify({action: 'Initiating'}));
 
     WebViewBridge.onMessage = function (action) {
-      switch (action) {
+      switch(JSON.parse(action)['message']) {
         case 'handshake confirmation please':
-          WebViewBridge.send(JSON.stringify({
-            action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }
-          }))
-          break
+          WebViewBridge.send(JSON.stringify( {action: 'Confirming'} ))
+          break;
+        case 'dimensions':
+          var dimensions = JSON.parse(action)['dimensions']
+          var canvas = '${canvasScript}'.replace('replaceWidth', dimensions['width'])
+          canvas = canvas.replace('replaceHeight', dimensions['height'])
+          document.querySelector('body').innerHTML = canvas
+          var clueData = "replaceClue"
+          initDraw(clueData)
+          break;
         case 'extract data':
           deliverCanvas()
-          break
+          break;
+        default:
+          break;
       }
-    };
+
+    }
   }
 
   function deliverCanvas () {
@@ -37,105 +48,146 @@ const injected = `
     const ctx = canvas.getContext('2d')
     ctx.clearRect(0,0,window.innerWidth,window.innerHeight)
   }
-
-}());
-`
+}());`
 
 export default class Canvas extends Component {
   constructor (props) {
+    Orientation.lockToLandscapeLeft()
     super(props)
+    this.state = {
+      instructions: true,
+      time: 20
+    }
+    this.startTimeRemaining()
   }
 
   componentDidMount () {
-    Orientation.lockToLandscapeLeft()
+    this.startInstructionCountDown()
   }
 
-  componentWillUnmount () {
-    Orientation.lockToPortrait()
-
+  startTimeRemaining () {
+    this.interval = this.setInterval( this.updateTimeRemaining, 1000)
   }
 
-  onBridgeMessage(incoming) {
-    message = JSON.parse(incoming)
+  updateTimeRemaining () {
+    const {time, instructions } = this.state
+    this.setState({
+      instructions: instructions,
+      time: time - 1
+    })
+
+    if (this.state.time === 0) {
+      this.getCanvasData()
+    }
+  }
+
+  startInstructionCountDown() {
+    this.setTimeout(() => this.removeInstructions(), 5000)
+  }
+
+  removeInstructions() {
+    this.setState({
+      instructions: false,
+      time: this.state.time
+    })
+  }
+
+  onBridgeMessage(message) {
+    message = JSON.parse(message)
     const { webviewbridge } = this.refs;
     switch (message['action']) {
       case 'Initiating':
         console.log('WebViewBridge Link initiated')
-        webviewbridge.sendToBridge('handshake confirmation please')
+        webviewbridge.sendToBridge('{"message": "handshake confirmation please"}')
         break
       case 'Confirming':
-        console.log('Link confirmed', message.data)
-        this.componentDidMount()
-        this.props.sendDimensions(message.data)
+        const {width, height} = this.props.dimensions
+        console.log('Link confirmed')
+        webviewbridge.sendToBridge(`{"message": "dimensions", "dimensions": {"width": ${width} , "height": ${height} }}`)
         break
       case 'canvas data':
-        console.log('canvas data', message.data.length)
         this.props.sendDrawing(message.data)
-        break
+        break;
     }
   }
 
   getCanvasData () {
+    this.clearInterval(this.interval)
     const { webviewbridge } = this.refs;
-    webviewbridge.sendToBridge('extract data')
+    webviewbridge.sendToBridge('{"message": "extract data"}')
   }
 
   render() {
+    const {time} = this.state
     const { bodyPart, clue } = this.props
+    let instructions = null
+
+    if (this.state.instructions) {
+      instructions = (<View style={ styles.instructions }>
+          <Text>
+            Draw the { bodyPart } of the beast!
+          </Text>
+        </View>)
+    }
+    const updatedScript = injected.replace('replaceClue', clue)
     return (
-      <ScrollView>
-        <Text>
-          Draw the { bodyPart } of the beast!
-        </Text>
-
-        <Clue
-          styles={ styles.clue }
-          clue={ clue } />
-
-        <WebViewBridge
-          source={ require('./canvas.html') }
-          ref='webviewbridge'
-          onBridgeMessage = { this.onBridgeMessage.bind(this) }
-          scalesPageToFit = { true }
-          javaScriptEnabled={ true }
-          injectedJavaScript={ injected }
-          style={ styles.webview }
-        />
-
-        <View style={ styles.buttonParent }>
-          <Text
-            onPress={ () => this.getCanvasData() }
-            style={ styles.button }>
-              I'm Finished
+      <View style={ styles.container }>
+        { instructions }
+        <View style= { styles.timerContainer }>
+          <Text style={ styles.timer }>
+            {time}
           </Text>
         </View>
-
-      </ScrollView>
-    )
+        <View style={ styles.canvas }>
+          <WebViewBridge
+            source={ require('./canvas.html') }
+            ref='webviewbridge'
+            onBridgeMessage = { this.onBridgeMessage.bind(this) }
+            scalesPageToFit = { true }
+            javaScriptEnabled={ true }
+            injectedJavaScript={ updatedScript }
+            style={ styles.webview }
+          />
+        </View>
+      </View>)
   }
 }
+reactMixin(Canvas.prototype, TimerMixin);
+
+var {width, height} = Dimensions.get('window')
+width = width > height ? width : Dimensions.get('window').height
+height = height < width ? height : Dimensions.get('window').width
+
 
 const styles = {
-  webview: {
-    width: Dimensions.get('window').width,
-    height: 220,
+  container: {
+    flex: 1
   },
-  buttonParent: {
+  instructions : {
+    zIndex: 1,
     flex: 1,
     justifyContent: 'center',
-    flexDirection: 'row'
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    position: 'absolute'
   },
-  button: {
-    backgroundColor: 'blue',
-    color: 'white',
-    height: 50,
-    width: 150,
-    textAlign: 'center',
-    paddingTop: 15
+  timer : {
+    zIndex: 1,
+    flex: 1,
+    fontSize: 30,
   },
-  clue: {
-    width: Dimensions.get('window').width,
-    height: 30,
-    overflow: 'visible'
+  timerContainer: {
+    zIndex: 1,
+    position: 'absolute',
+    right: 0
+  },
+  canvas: {
+    zIndex: -1,
+    width: width,
+    height: height,
+  },
+  webview: {
+    flex: 1,
+    zIndex: -1
   }
 }

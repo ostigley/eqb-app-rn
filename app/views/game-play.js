@@ -8,29 +8,25 @@ import Canvas               from './canvas'
 import Final                from './final'
 import Connecting           from  './connecting'
 import Waiting              from './waiting'
+import WaitingForNextDrawing from './waiting2'
 import { connect }  from 'react-redux'
-import Orientation from 'react-native-orientation'
 
 import * as controllerActions from '../controllers/game-actions'
 
 class Game extends Component {
   constructor (props) {
     super(props)
-    console.log('game play', this.props)
-  }
-
-  componentDidMount () {
-    if (this.props.level && this.props.level.current == 4 ) {
-      Orientation.lockToPortrait()
-    }
   }
 
   render() {
-    const { level, sendDrawing, body, part, sendDimensions } = this.props
+    const { level, sendDrawing, body, part, dimensions } = this.props
+
       if (level === 'waiting') {
-        return (<Connecting styles={ styles.pendingText } />)
+        return (<Waiting />)
+      } else if (level === 'drawing complete') {
+        return (<WaitingForNextDrawing />)
       } else if (!level) {
-        return (<Waiting styles={ styles.pendingText } />)
+        return (<Connecting />)
       } else if (level == 4) {
         return (<Final finalImage={ body.final }/>)
       } else {
@@ -39,7 +35,7 @@ class Game extends Component {
             bodyPart={ part }
             sendDrawing={ sendDrawing }
             clue={ body.clue }
-            sendDimensions={ sendDimensions }
+            dimensions ={ dimensions }
           />)
       }
   }
@@ -49,7 +45,8 @@ const mapStateToProps = state => {
   return {
     level: state.level,
     body: state.body,
-    part: state.part
+    part: state.part,
+    dimensions: state.dimensions
   }
 }
 
@@ -57,9 +54,3 @@ export const GameContainer = connect(
   mapStateToProps,
   controllerActions
 )(Game)
-
-const styles = StyleSheet.create({
-  pendingText: {
-    marginTop: 10,
-  }
-})

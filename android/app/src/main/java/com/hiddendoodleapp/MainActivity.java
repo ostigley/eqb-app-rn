@@ -1,8 +1,8 @@
 package com.hiddendoodleapp;
 
 import com.facebook.react.ReactActivity;
- import android.content.Intent; // <--- import
-    import android.content.res.Configuration; // <--- import
+import android.content.Intent; // <--- import
+import android.content.res.Configuration; // <--- import
 
 public class MainActivity extends ReactActivity {
 
