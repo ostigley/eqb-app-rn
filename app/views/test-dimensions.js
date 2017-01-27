@@ -5,23 +5,21 @@
  */
 var Orientation = require('react-native').NativeModules.Orientation
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, Dimensions, PixelRatio, WebView } from 'react-native';
-// import WebViewBridge from 'react-native-webview-bridge';
+import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
+import WebViewBridge from 'react-native-webview-bridge';
 
-const injected =`
-(function () {
-  if (window.postMessage) {
-    window.postMessage(JSON.stringify({action: 'Initiating', data: {}}))
+const injected =` (function () {
+  document.querySelector('body').innerHTML = "<p>Live long and prosper</p>";
+  if (WebViewBridge) {
+    WebViewBridge.send(JSON.stringify({"action": 'Initiating', "data": {}}));
 
     WebViewBridge.onMessage = function (action) {
       switch (action) {
         case 'handshake confirmation please':
-          window.postMessage(JSON.stringify({
-            action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }
-          }))
-          break
+          WebViewBridge.send(JSON.stringify({action: 'Confirming', data: { height: window.innerHeight, width: window.innerWidth }}));
+          break;
       }
-    };
+    }
   }
 }());`
 
@@ -38,7 +36,7 @@ export default class TestDimensions extends Component {
     switch (message['action']) {
       case 'Initiating':
         console.log('TestDimension WebViewBridge Link initiated')
-        this.webview.postMessage('handshake confirmation please')
+        webviewbridge.sendToBridge('handshake confirmation please')
         break
       case 'Confirming':
         console.log('TestDimension Link confirmed')
@@ -48,15 +46,14 @@ export default class TestDimensions extends Component {
   }
 
   render() {
-    
     return (
-        <WebView
-          source={ {html: '<!DOCTYPE html><html style="width:100%;"><head></head><body style="height:100%;width:100%;margin:0;padding:0"><h1>Hello World</h1></body></html>'} }
+        <WebViewBridge
+          source={  require('./canvas.html') }
           ref='webviewbridge'
-          onMessage = { this.onBridgeMessage.bind(this) }
+          onBridgeMessage = { this.onBridgeMessage.bind(this) }
           scalesPageToFit = { true }
           javaScriptEnabled={ true }
-          injectedJavaScript={ '' }
+          injectedJavaScript={ injected }
           style={ styles.webview }
         />
     )
@@ -68,7 +65,6 @@ const styles = {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').width,
     zIndex: 0,
-    opacity: 0,
-
+    opacity: 0
   }
 }
