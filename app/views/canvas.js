@@ -42,10 +42,10 @@ const injected =`(function () {
       var ctx = canvas.getContext("2d");
       if (clue !== '') {
         var clueImage = new Image;
-        clueImage.src = clue;
         clueImage.onload = function () {
           ctx.drawImage(clueImage, 0,0);
         };
+        clueImage.src = clue;
       }
       ctx.strokeStyle= "black";
       ctx.lineJoin = "round";
@@ -89,7 +89,7 @@ export default class Canvas extends Component {
     super(props)
     this.state = {
       instructions: true,
-      time: 20
+      time: 8
     }
     this.startTimeRemaining()
   }
