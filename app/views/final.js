@@ -23,7 +23,7 @@ const Final = ({ finalImage }) => {
   }
 
   return (
-    <View style={ styles.container}>
+    <View>
       <Image
         style={ styles.image }
         source={ { uri: finalImage } }
