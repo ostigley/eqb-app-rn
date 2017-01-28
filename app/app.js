@@ -30,15 +30,15 @@ export default class App extends Component {
       forceNew: true
     }
 
-    this.socket = io('10.0.2.2:3000', options)
+    this.socket = io('http://10.0.2.2:3000', options)
 
     this.socket.on('connect', () => {
       console.log('connected to socket server')
        const action = {
-      type: 'SET_DIMENSIONS',
-      dimensions: store.getState().dimensions,
-      playerId: this.socket.id
-    }
+        type: 'SET_DIMENSIONS',
+        dimensions: store.getState().dimensions,
+        playerId: this.socket.id
+      }
     this.socket.emit('action', action)
     })
 

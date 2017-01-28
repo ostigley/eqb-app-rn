@@ -1,15 +1,11 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+
 var Orientation = require('react-native').NativeModules.Orientation
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Image, Dimensions, PixelRatio } from 'react-native';
 import WebViewBridge from 'react-native-webview-bridge';
 
 const injected =` (function () {
-  document.querySelector('body').innerHTML = "<p>Live long and prosper</p>";
+  
   if (WebViewBridge) {
     WebViewBridge.send(JSON.stringify({"action": 'Initiating', "data": {}}));
 
