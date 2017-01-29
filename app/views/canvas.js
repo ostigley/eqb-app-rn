@@ -8,9 +8,17 @@ import reactMixin from  'react-mixin'
 import TimerMixin from 'react-timer-mixin';
 
 const injected =`(function () {
+    var width, height;
+    if (window.innerWidth < window.innerHeight) {
+      width = window.innerHeight;
+      height = window.innerWidth;
+    } else {
+      height = window.innerHeight;
+      width = window.innerWidth;
+    }
+
     if (window.WebViewBridge) {
       WebViewBridge.send(JSON.stringify({"action": 'Initiating'}));
-
       WebViewBridge.onMessage = function (action) {
         switch(JSON.parse(action)['message']) {
           case 'handshake confirmation please':
@@ -18,8 +26,9 @@ const injected =`(function () {
             break;
           case 'dimensions':
             var dimensions = JSON.parse(action)['dimensions'];
-            var canvas = '${canvasScript}'.replace('replaceWidth', dimensions['width']);
-            canvas = canvas.replace('replaceHeight', dimensions['height']);
+            
+            var canvas = '${canvasScript}'.replace('replaceWidth', width);
+            canvas = canvas.replace('replaceHeight', height);
             document.querySelector('body').innerHTML = canvas;
             var clueData = "replaceClue";
             initDraw(clueData);
@@ -43,7 +52,7 @@ const injected =`(function () {
       if (clue !== '') {
         var clueImage = new Image;
         clueImage.onload = function () {
-          ctx.drawImage(clueImage, 0,0);
+          ctx.drawImage(clueImage, 0,0, width, height*0.1);
         };
         clueImage.src = clue;
       }
@@ -89,7 +98,7 @@ export default class Canvas extends Component {
     super(props)
     this.state = {
       instructions: true,
-      time: 8
+      time: 12
     }
     this.startTimeRemaining()
   }
