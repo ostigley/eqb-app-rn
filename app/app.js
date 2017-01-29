@@ -30,7 +30,7 @@ export default class App extends Component {
       forceNew: true
     }
 
-    this.socket = io('http://10.0.2.2:3000', options)
+    this.socket = io('http://192.168.20.24:3000', options)
 
     this.socket.on('connect', () => {
       console.log('connected to socket server')
