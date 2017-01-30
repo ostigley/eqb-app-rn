@@ -70,11 +70,8 @@ export default class Canvas extends Component {
   }
 
   updateTimeRemaining () {
-    const {time, instructions } = this.state
-    this.setState({
-      instructions: instructions,
-      time: time - 1
-    })
+    const { time } = this.state
+    this.setState({ time: time - 1 })
 
     if (this.state.time === 0) {
       this.getCanvasData()
@@ -86,10 +83,7 @@ export default class Canvas extends Component {
   }
 
   removeInstructions() {
-    this.setState({
-      instructions: false,
-      time: this.state.time
-    })
+    this.setState({ instructions: false })
   }
 
   onBridgeMessage(message) {
