@@ -30,7 +30,7 @@ export default class App extends Component {
       forceNew: true
     }
 
-    this.socket = io('http://10.0.2.2:3000', options)
+    this.socket = io('http://192.168.0.190:3000', options)
 
     this.socket.on('connect', () => {
       console.log('connected to socket server')
@@ -74,10 +74,13 @@ export default class App extends Component {
   }
 
   sendDimensions (data) {
-    store.dispatch(setDimensions({}, data))
+    const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
+    const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
+
+    store.dispatch(setDimensions({}, { height: height , width: width }))
     const action = {
       type: 'SET_DIMENSIONS',
-      dimensions: { height: data.width, width: data.height },
+      dimensions: { height: height, width: width },
       playerId: this.socket.id
     }
     this.socket.emit('action', action)
