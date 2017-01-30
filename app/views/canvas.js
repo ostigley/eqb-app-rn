@@ -46,7 +46,7 @@ const injected =` (function () {
       data: canvas.toDataURL()
     }))
     const ctx = canvas.getContext('2d')
-    ctx.clearRect(0,0,window.innerWidth,window.innerHeight)
+    ctx.clearRect(0,0,ctx.width,ctx.height)
   }
 }());`
 
@@ -56,7 +56,7 @@ export default class Canvas extends Component {
     super(props)
     this.state = {
       instructions: true,
-      time: 20
+      time: 7
     }
     this.startTimeRemaining()
   }
@@ -154,9 +154,8 @@ export default class Canvas extends Component {
 }
 reactMixin(Canvas.prototype, TimerMixin);
 
-var {width, height} = Dimensions.get('window')
-width = width > height ? width : Dimensions.get('window').height
-height = height < width ? height : Dimensions.get('window').width
+const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
+const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
 
 
 const styles = {

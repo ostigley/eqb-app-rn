@@ -12,10 +12,10 @@
       var ctx = canvas.getContext("2d");
       if (clue !== '') {
         var clueImage = new Image
-        clueImage.src = clue
         clueImage.onload = () => {
           ctx.drawImage(clueImage, 0,0)
         }
+        clueImage.src = clue
       }
       ctx.strokeStyle= "black";
       ctx.lineJoin = "round";
