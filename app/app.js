@@ -6,7 +6,8 @@ import {
   AppState,
   Dimensions,
   NativeModules,
-  StatusBar }              from 'react-native'
+  StatusBar,
+  PixelRatio }              from 'react-native'
 import { GameContainer }    from './views/game-play'
 import { Provider }         from 'react-redux'
 import { store }            from  './models/game-state-store'
@@ -71,11 +72,11 @@ export default class App extends Component {
   sendDimensions () {
     const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
     const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
-
-    store.dispatch(setDimensions({}, { height: height - StatusBar.currentHeight , width: width }))
+    const dimensions = { width: width, height: (height - StatusBar.currentHeight) }
+    store.dispatch(setDimensions({}, dimensions))
     const action = {
       type: 'SET_DIMENSIONS',
-      dimensions: { height: height - StatusBar.currentHeight, width: width },
+      dimensions: dimensions,
       playerId: this.socket.id
     }
     this.socket.emit('action', action)
