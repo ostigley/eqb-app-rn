@@ -3,7 +3,7 @@
 <head>
 
   <script type="text/javascript">
-    var initDraw = function (clue) {
+    var initDraw = function (clue, dimensions) {
       var canvas = document.querySelector("#mycanvas");
       canvas.addEventListener("touchstart", handleStart, false);
 
@@ -13,7 +13,7 @@
       if (clue !== '') {
         var clueImage = new Image
         clueImage.onload = () => {
-          ctx.drawImage(clueImage, 0,0)
+          ctx.drawImage(clueImage, 0,0, dimensions['width'], dimensions['height']*0.1)
         }
         clueImage.src = clue
       }

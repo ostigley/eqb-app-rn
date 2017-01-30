@@ -27,7 +27,7 @@ const injected =` (function () {
           canvas = canvas.replace('replaceHeight', dimensions['height'])
           document.querySelector('body').innerHTML = canvas
           var clueData = "replaceClue"
-          initDraw(clueData)
+          initDraw(clueData, dimensions)
           break;
         case 'extract data':
           deliverCanvas()
