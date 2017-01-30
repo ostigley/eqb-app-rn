@@ -79,7 +79,7 @@ const injected =`(function () {
       const canvas = document.querySelector('canvas');
       WebViewBridge.send(JSON.stringify({ action: 'canvas data', data: canvas.toDataURL() }));
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      ctx.clearRect(0,0,ctx.width,ctx.height);
     };
   })();`
 
