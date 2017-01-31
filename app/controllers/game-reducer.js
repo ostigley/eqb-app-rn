@@ -1,8 +1,8 @@
-const gameReducer = (state = {}, action) => {
+const gameReducer = (state = {dimensions: {}}, action) => {
   let newState = Object.assign({}, state)
   switch (action.type) {
     case 'SET_STATE':
-      return action.state
+      return Object.assign(state.dimensions, action.state)
     case 'SET_DIMENSIONS':
       newState.dimensions = { height: action.dimensions.width, width: action.dimensions.height }
       return newState
