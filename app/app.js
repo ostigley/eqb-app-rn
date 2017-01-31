@@ -73,14 +73,13 @@ export default class App extends Component {
     const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
     const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
     const dimensions = { width: width, height: (height - StatusBar.currentHeight) }
-    store.dispatch(setDimensions({}, dimensions))
+    store.dispatch(setDimensions(store.getState(), dimensions))
     const action = {
       type: 'SET_DIMENSIONS',
       dimensions: dimensions,
       playerId: this.socket.id
     }
     this.socket.emit('action', action)
-    this.forceUpdate()
   }
 
   render () {

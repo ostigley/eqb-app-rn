@@ -20,12 +20,6 @@ class Game extends Component {
 
   render() {
     const { level, sendDrawing, body, part, dimensions } = this.props
-    // const level = 1
-    // const sendDrawing = () => {}
-    // const body = {clue: ''}
-    // const part = 'head'
-    // const dimensions = {height: 500, width: 500}
-    console.log('game-play level is: ', level)
 
       if (level === 'waiting') {
         return (<Waiting />)
