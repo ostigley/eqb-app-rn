@@ -6,18 +6,15 @@ const Final = ({ finalImage }) => {
   Orientation.lockToPortrait()
 
 
-  const {width, height} = Dimensions.get('window')
-  const imageWidth = width > height ? height : width
-  const imageHeight = height < width ? width : height
-  console.log('final', imageWidth, imageHeight)
+  const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
+  const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
 
   const styles = {
     image: {
       flex: 1,
-      width: imageWidth,
-      height: imageHeight,
-      borderWidth: 5,
-      borderColor: 'red'
+
+      height: height,
+      width: width
     },
     container: {
       flex: 1

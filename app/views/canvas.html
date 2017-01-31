@@ -6,4 +6,47 @@
 </head>
   <body style="height:100%;width:100%;margin:0;padding:0">
   </body>
+  <script type="text/javascript">
+    var initDraw = function (clue) {
+      var canvas = document.querySelector("#mycanvas");
+      canvas.addEventListener("touchstart", handleStart, false);
+
+      canvas.addEventListener("touchmove", handleMove, false);
+
+      var ctx = canvas.getContext("2d");
+      if (clue !== '') {
+        var clueImage = new Image
+        clueImage.src = clue
+        clueImage.onload = () => {
+          ctx.drawImage(clueImage, 0,0)
+        }
+      }
+      ctx.strokeStyle= "black";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = 5;
+      ctx.lineCap = "round";
+
+      var touch = {x: 0, y: 0};
+
+      function handleStart(evt) {
+        evt.preventDefault();
+        var touched = evt.changedTouches[0];
+        touch.x = touched.pageX - canvas.offsetLeft;
+        touch.y = touched.pageY - canvas.offsetTop;
+        ctx.beginPath();
+        ctx.moveTo(touch.x, touch.y);
+      };
+
+      function handleMove(evt) {
+        evt.preventDefault();
+        var touched = evt.changedTouches[0];
+        newX = touched.pageX - canvas.offsetLeft;
+        newY = touched.pageY - canvas.offsetTop;
+        ctx.lineTo(touch.x, touch.y);
+        ctx.stroke();
+        touch.x = newX;
+        touch.y = newY;
+      }
+    }
+  </script>
 </html>

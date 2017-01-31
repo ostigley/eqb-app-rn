@@ -31,7 +31,7 @@ const injected =`(function () {
             canvas = canvas.replace('replaceHeight', height);
             document.querySelector('body').innerHTML = canvas;
             var clueData = "replaceClue";
-            initDraw(clueData);
+            initDraw(clueData, dimensions);
             break;
           case 'extract data':
             deliverCanvas();
@@ -42,7 +42,7 @@ const injected =`(function () {
       }
     }
 
-    function initDraw (clue) {
+    function initDraw (clue, dimensions) {
       var canvas = document.querySelector("#mycanvas");
       canvas.addEventListener("touchstart", handleStart, false);
       canvas.addEventListener("touchmove", handleMove, false);
@@ -52,7 +52,7 @@ const injected =`(function () {
       if (clue !== '') {
         var clueImage = new Image;
         clueImage.onload = function () {
-          ctx.drawImage(clueImage, 0,0, width, height*0.1);
+          ctx.drawImage(clueImage, 0,0, dimensions['width'], dimensions['height']*0.1);
         };
         clueImage.src = clue;
       }
@@ -88,7 +88,7 @@ const injected =`(function () {
       const canvas = document.querySelector('canvas');
       WebViewBridge.send(JSON.stringify({ action: 'canvas data', data: canvas.toDataURL() }));
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      ctx.clearRect(0,0,ctx.width,ctx.height);
     };
   })();`
 
