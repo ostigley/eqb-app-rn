@@ -28,7 +28,8 @@ export default class App extends Component {
       forceNew: true
     }
 
-    this.socket = io('http://192.168.0.190:3000', options)
+    // this.socket = io('http://192.168.0.190:3000', options)
+    this.socket = io('https://hiddendoodle.herokuapp.com', options)
 
     this.socket.on('connect', () => {
       this.sendDimensions()
