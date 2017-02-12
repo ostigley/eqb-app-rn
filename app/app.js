@@ -5,7 +5,8 @@ import {
   Text,
   AppState,
   Dimensions,
-  PixelRatio }              from 'react-native'
+  StatusBar,
+  Platform }              from 'react-native'
 import { GameContainer }    from './views/game-play'
 import { Provider }         from 'react-redux'
 import { store }            from  './models/game-state-store'
@@ -15,6 +16,7 @@ import {
   setDimensions,
   drawingComplete
 }                           from './controllers/game-actions'
+
 
 // what's going on here? https://medium.com/@ekryski/how-to-actually-use-socket-io-in-react-native-39082d8d6172#.tksgjt65y
 window.navigator.userAgent = 'ReactNative'
@@ -28,10 +30,10 @@ export default class App extends Component {
       forceNew: true
     }
 
-    // this.socket = io('http://192.168.0.190:3000', options)
-    this.socket = io('https://hiddendoodle.herokuapp.com', options)
-
+    // this.socket = io('https://hiddendoodle.herokuapp.com/', options)
+    this.socket = io('http://localhost:3000', options)
     this.socket.on('connect', () => {
+      console.log('connected to socket server')
       this.sendDimensions()
     })
 
@@ -39,11 +41,14 @@ export default class App extends Component {
       resetGame(store)
     })
 
-    this.socket.on('state', state => store.dispatch(setState(state)))
+    this.socket.on('state', state => {
+      store.dispatch(setState(state))
+    })
   }
 
   componentDidMount () {
     AppState.addEventListener('change', () => {
+      console.log('App state changed to', AppState.currentState)
       const state = AppState.currentState
       if (state === 'inactive' || state === 'background' ) {
         this.socket.disconnect()
@@ -69,16 +74,14 @@ export default class App extends Component {
   sendDimensions () {
     const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
     const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
-
-    const dimensions = { height: height*PixelRatio.get(), width: width*PixelRatio.get() }
-    store.dispatch(setDimensions({}, dimensions))
+    const dimensions = { width: width, height: (Platform.OS === 'android' ? height - StatusBar.currentHeight : height) }
+    store.dispatch(setDimensions(store.getState(), dimensions))
     const action = {
-     type: 'SET_DIMENSIONS',
-     dimensions: dimensions,
-     playerId: this.socket.id
+      type: 'SET_DIMENSIONS',
+      dimensions: dimensions,
+      playerId: this.socket.id
     }
     this.socket.emit('action', action)
-    this.forceUpdate()
   }
 
   render () {
@@ -86,9 +89,9 @@ export default class App extends Component {
     return (
       <Provider store={ store }>
         <View style={ styles.container }>
-         <View style={ styles.container1 }>
-           <GameContainer sendDrawing= { this.sendDrawing.bind(this) }/>
-         </View>
+          <View style={ styles.container1 }>
+            <GameContainer sendDrawing= { this.sendDrawing.bind(this) }/>
+          </View>
         </View>
       </Provider>
     )

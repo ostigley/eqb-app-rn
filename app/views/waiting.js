@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import Orientation from 'react-native-orientation'
+var Orientation = require('react-native').NativeModules.Orientation
 
 const Waiting = () => {
   Orientation.lockToPortrait()

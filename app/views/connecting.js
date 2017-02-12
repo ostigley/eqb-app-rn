@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React    from 'react'
 const Connecting = () => {
-  return (<View> 
+  return (<View>
       <Text style={ {fontSize: 30,textAlign: 'center',color: 'black'} }>
         HiddenDoodle
       </Text>

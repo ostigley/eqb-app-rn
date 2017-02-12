@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Image, Text, View, Dimensions } from 'react-native';
-import Orientation from 'react-native-orientation'
+var Orientation = require('react-native').NativeModules.Orientation
 
 const Final = ({ finalImage }) => {
   Orientation.lockToPortrait()
@@ -12,6 +12,7 @@ const Final = ({ finalImage }) => {
   const styles = {
     image: {
       flex: 1,
+
       height: height,
       width: width
     },
@@ -21,7 +22,7 @@ const Final = ({ finalImage }) => {
   }
 
   return (
-    <View style={ styles.container}>
+    <View>
       <Image
         style={ styles.image }
         source={ { uri: finalImage } }
