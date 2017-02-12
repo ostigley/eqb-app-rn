@@ -5,9 +5,8 @@ import {
   Text,
   AppState,
   Dimensions,
-  NativeModules,
   StatusBar,
-  PixelRatio }              from 'react-native'
+  Platform }              from 'react-native'
 import { GameContainer }    from './views/game-play'
 import { Provider }         from 'react-redux'
 import { store }            from  './models/game-state-store'
@@ -32,7 +31,7 @@ export default class App extends Component {
     }
 
     // this.socket = io('https://hiddendoodle.herokuapp.com/', options)
-    this.socket = io('http://192.168.0.190:3000', options)
+    this.socket = io('http://localhost:3000', options)
     this.socket.on('connect', () => {
       console.log('connected to socket server')
       this.sendDimensions()
@@ -42,11 +41,14 @@ export default class App extends Component {
       resetGame(store)
     })
 
-    this.socket.on('state', state => store.dispatch(setState(state)))
+    this.socket.on('state', state => {
+      store.dispatch(setState(state))
+    })
   }
 
   componentDidMount () {
     AppState.addEventListener('change', () => {
+      console.log('App state changed to', AppState.currentState)
       const state = AppState.currentState
       if (state === 'inactive' || state === 'background' ) {
         this.socket.disconnect()
@@ -72,7 +74,7 @@ export default class App extends Component {
   sendDimensions () {
     const width = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').width : Dimensions.get('window').height
     const height = Dimensions.get('window').width > Dimensions.get('window').height ? Dimensions.get('window').height : Dimensions.get('window').width
-    const dimensions = { width: width, height: (height - StatusBar.currentHeight) }
+    const dimensions = { width: width, height: (Platform.OS === 'android' ? height - StatusBar.currentHeight : height) }
     store.dispatch(setDimensions(store.getState(), dimensions))
     const action = {
       type: 'SET_DIMENSIONS',
