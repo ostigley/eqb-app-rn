@@ -5,7 +5,7 @@ const gameReducer = (state = {}, action) => {
     case 'SET_STATE':
       return Object.assign(newState,action.state)
     case 'SET_DIMENSIONS':
-      newState.dimensions = { height: action.dimensions.height, width: action.dimensions.width }
+      newState.dimensions = action.dimensions
       return newState
     case 'DRAWING_COMPLETE':
       newState.level = 'drawing complete'
